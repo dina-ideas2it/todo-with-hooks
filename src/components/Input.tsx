@@ -1,26 +1,19 @@
-import React, { createRef, RefObject, useEffect, SyntheticEvent } from 'react';
-import { IInputProps } from '../typings';
+import { ChangeEvent } from "react";
 
-export default function Input({onChange, defaultValue, onEnterKey}: IInputProps) {
-  const inputRef: RefObject<HTMLInputElement> = createRef();
-  const handleChange = () => {
-    const value = inputRef!.current!.value;
-    onChange(value);
-  }
+export type InputProps = {
+  onChange(value: string): void;
+  defaultValue: string;
+};
 
-  const handleKeyPress = (event: any) => {
-    if(event.key === 'Enter') {
-      onEnterKey();
-    }
-  }
-
+export default function Input({ onChange, defaultValue }: InputProps) {
   return (
     <input
       className="form-control"
-      onKeyPress={(event) => handleKeyPress(event)}
       value={defaultValue}
-      onChange={() => handleChange()}
+      onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+        onChange(evt.target.value)
+      }
       type="text"
-      ref={inputRef} />
-  )
+    />
+  );
 }

@@ -1,27 +1,16 @@
-import React, { useReducer } from 'react';
-import './App.css';
-import AppContext from './AppContext';
-import Todo from './components/Todo';
-import reducer, { initialState } from './reducer';
-import { IAppState, IAppContext } from './typings';
+import "./App.css";
+import { AppProvider } from "./AppContext";
+import Todo from "./components/Todo";
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  
-  const appContext: IAppContext = {
-    dispatch: dispatch,
-    state: state
-  }
   return (
     <>
-      <AppContext.Provider value={appContext}>
+      <AppProvider>
         <div className="App">
-          <h3 className="app-title">
-            Todo App
-          </h3>
-          <Todo todos={state.todos}/>
+          <h3 className="app-title">Todo App</h3>
+          <Todo />
         </div>
-      </AppContext.Provider>
+      </AppProvider>
     </>
   );
 }

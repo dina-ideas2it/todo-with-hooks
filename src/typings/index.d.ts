@@ -1,46 +1,52 @@
-import { ComponentElement } from "react";
+import { ComponentElement, Dispatch } from "react";
+import {
+  ADD_ITEM,
+  TOGGLE_STATUS,
+  DELETE_ITEM,
+  UPDATE_ITEM,
+} from "../utils/Constants";
 
-export interface IInputProps {
-  onChange(value: string): void,
-  defaultValue: string,
-  onEnterKey(): void
-}
+export type Todo = {
+  id: string;
+  done: boolean;
+  itemDesc: string;
+  editMode: boolean;
+};
 
-export interface IItemFormProps {
-  itemId: string,
-  formMode: string,
-  itemDesc: string,
-}
+type Todos = Record<string, Todo>;
 
-export interface ITodo {
-  id: string,
-  done: boolean,
-  itemDesc: string,
-  editMode: boolean
-}
+export type AppState = {
+  todos: Todos;
+};
 
-interface ITodos {
-  [key: string]: Todo
-}
+type AddItemAction = {
+  type: typeof ADD_ITEM;
+  value: string;
+};
 
-export interface ITodoProps {
-  todos: ITodos
-}
+type ToggleStatus = {
+  type: typeof TOGGLE_STATUS;
+  id: string;
+};
 
-export interface IAppState {
-  todos: ITodos
-}
+type DeleteItem = {
+  type: typeof DELETE_ITEM;
+  id: string;
+};
 
-export interface IAppContext {
-  dispatch: Function,
-  state: IAppState
-}
+type UpdateItem = {
+  type: typeof UPDATE_ITEM;
+  id: string;
+  value: string;
+};
 
-export interface IReducerAction {
-  type: string,
-  [key: string]: any
-}
+type TodoAction = AddItemAction | ToggleStatus | DeleteItem | UpdateItem;
 
-export interface ITodoItemProps {
-  todo: ITodo
-}
+export type AppContext = {
+  dispatch: Dispatch<TodoAction>;
+  state: AppState;
+};
+
+export type ITodoItemProps = {
+  todo: Todo;
+};

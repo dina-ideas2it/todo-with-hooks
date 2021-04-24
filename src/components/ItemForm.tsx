@@ -1,36 +1,51 @@
-import React, { useContext, useState } from 'react';
-import Input from './Input';
+import { FormEvent, useContext, useState } from "react";
+import Input from "./Input";
 
-import AppContext from '../AppContext';
-import Constants from '../utils/Constants';
-import { IItemFormProps } from '../typings';
+import AppContext from "../AppContext";
+import { ADD_ITEM, UPDATE_ITEM } from "../utils/Constants";
+import { AddItemAction, UpdateItem } from "../typings";
 
+export type ItemFormProps = {
+  itemId?: string | null;
+  itemDesc: string;
+  onDone?(): void;
+};
 
-export default function ItemForm({formMode, itemId, itemDesc=''}: IItemFormProps) {
-  const {dispatch} = useContext(AppContext);
+export default function ItemForm({
+  itemId = null,
+  itemDesc = "",
+  onDone,
+}: ItemFormProps) {
+  const { dispatch } = useContext(AppContext);
 
   const [todoItem, setTodoItem] = useState(itemDesc);
 
   const dispatchAction = (value: string) => {
-    const actionType = formMode === Constants.CREATE_MODE
-      ? Constants.ADD_ITEM : Constants.EDIT_ITEM;
-    dispatch({
-      type: actionType,
-      id: itemId,
-      value: value
-    });
-    setTodoItem('');
-  }
-
+    const payload = !itemId
+      ? ({ type: ADD_ITEM, value } as AddItemAction)
+      : ({ type: UPDATE_ITEM, id: itemId, value } as UpdateItem);
+    dispatch(payload);
+    setTodoItem("");
+    onDone && onDone();
+  };
   return (
-    <div className="item-detail">
-      <Input
-        onEnterKey={() => dispatchAction(todoItem)}
-        defaultValue={todoItem}
-        onChange={(value) => setTodoItem(value)} />
-      <button disabled={todoItem.length < 1} onClick={() => dispatchAction(todoItem)}>
-        {formMode === Constants.CREATE_MODE ? 'Add' : 'Save' }
-      </button>
-    </div>
-  )
+    <form
+      onSubmit={(evt: FormEvent<HTMLFormElement>) => {
+        evt.preventDefault();
+        dispatchAction(todoItem);
+      }}
+    >
+      <div className="item-detail">
+        <Input
+          defaultValue={todoItem}
+          onChange={(value) => setTodoItem(value)}
+        />
+        <input
+          type="submit"
+          value={!itemId ? "Add" : "Save"}
+          disabled={todoItem.length < 1}
+        />
+      </div>
+    </form>
+  );
 }
